@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Simple parser for OVERPASS API</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="../../js/overpassparser.js"></script>
+    <script>
+
+        window.addEventListener("load", async () => {
+
+            var overpassParser = new OverpassParser();
+
+            var bbox = { lat1: 50.98588, lon1: 11.05539, lat2: 50.99191, lon2: 11.07223 };
+
+            var overpassresult = await overpassParser.fetchBbox(bbox, ["relation", "way", "node"]);
+
+            var features = await overpassParser.extractFeatures(overpassresult);
+            var highways = await overpassParser.filterFeatures(features, "highway");
+            var buildings = await overpassParser.filterFeatures(features, "building");
+
+            console.log("Features:", features, "Highways:", highways, "Buildings:", buildings);
+
+        });
+
+    </script>
+</head>
+
+<body>
+    <h1>Simple parser for OVERPASS API</h1>
+    <p>Look into the developer console (F12)!</p>
+</body>
+
+</html>

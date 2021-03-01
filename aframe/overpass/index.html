@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="../../js/aframe.js"></script>
+    <script src="../../js/overpassparser.js"></script>
+    <script src="../../js/layers/overpassstreetlayer.js"></script>
+    <script src="../components/r-geolocation.js"></script>
+    <script src="../components/r-overpass-layer.js"></script>
+    <script src="../components/r-street.js"></script>
+    <script>
+        function log(data) {
+            console.log(data);
+            var logtag = document.querySelector("log");
+            logtag.style.display = "block";
+            var tabletag = document.querySelector("log table");
+            var html = "";
+            Object.keys(data).forEach(function (key) {
+                html += "<tr><th>" + key + "</th><td>" + data[key] + "</td></tr>";
+            });
+            html += "</table>";
+            tabletag.innerHTML = html;
+        }
+
+        var raycaster;
+
+        function startscan() {
+            console.log("startscan");
+            raycaster = document.querySelector('a-entity[raycaster]');
+            if (raycaster) raycaster.setAttribute("raycaster", "enabled", true);
+            console.log(raycaster);
+            setTimeout(stopscan, 500);
+        }
+
+        function stopscan() {
+            if (raycaster) raycaster.setAttribute("raycaster", "enabled", false);
+            console.log("stopscan");
+        }
+
+        function closedetails() {
+            document.querySelector("log").style.display = "none";
+        }
+
+    </script>
+    <style>
+        log {
+            display: none;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            overflow: auto;
+            right: 10px;
+            bottom: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-family: monospace;
+            flex-direction: column;
+        }
+
+        log button {
+            margin: 10px auto;
+            display: block;
+            padding: 6px 10px;
+        }
+
+        log table {
+            margin: 10px auto;
+        }
+
+        log th,
+        log td {
+            border-bottom: 1px solid lightgray;
+        }
+
+        scanner {
+            display: flex;
+            position: fixed;
+            width: 4em;
+            height: 4em;
+            overflow: auto;
+            left: 20px;
+            bottom: 20px;
+            background-color: rgba(0, 0, 255, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+    <a-scene r-geolocation>
+        <a-sky src="../../css/sky.png"></a-sky>
+        <a-plane color="#080" width="9999" height="9999" position="0 -0.1 0" rotation="-90 0 0"></a-plane>
+        <a-entity r-overpass-layer="factor:50000;radius:0.001;lat:50.99048;lon:11.06208"></a-entity>
+        <a-entity camera position="0 1.6 0" look-controls raycaster="enabled: false" cursor>
+            <a-entity line="start:-.02 0 -2; end:-0.005 0 -2;color: #44f" line__1="start:0.005 0 -2; end:0.02 0 -2;color: #44f" line__2="start:0 -.02 -2; end:0 -0.005 -2;color: #44f"
+                line__3="start:0 .005 -2; end:0 0.02 -2;color: #44f"></a-entity>
+        </a-entity>
+    </a-scene>
+    <log>
+        <table></table>
+        <button onclick="closedetails()">Schließen</button>
+    </log>
+    <scanner onclick="startscan()"></scanner>
+</body>
+
+</html>
